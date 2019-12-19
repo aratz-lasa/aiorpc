@@ -8,7 +8,7 @@ from aiorpc.exceptions import MethodNotFoundError, RPCProtocolError, MethodRegis
 from aiorpc.connection import Connection
 from aiorpc.log import rootLogger
 
-__all__ = ['RPCServer', 'register', 'msgpack_init', 'set_timeout', 'serve']
+__all__ = ['RPCServer', 'register', 'msgpack_init', 'set_timeout', 'serve', 'register_class']
 
 _logger = rootLogger.getChild(__name__)
 _pack_encoding = 'utf-8'
