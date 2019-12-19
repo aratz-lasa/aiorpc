@@ -8,7 +8,7 @@ from aiorpc.exceptions import MethodNotFoundError, RPCProtocolError, MethodRegis
 from aiorpc.connection import Connection
 from aiorpc.log import rootLogger
 
-__all__ = ['RPCServer']
+__all__ = ['RPCServer', 'register', 'msgpack_init', 'set_timeout', 'serve']
 
 _logger = rootLogger.getChild(__name__)
 _pack_encoding = 'utf-8'
@@ -205,3 +205,10 @@ class RPCServer:
 
             req_end = datetime.datetime.now()
             _logger.info("Method `%s` took %fms", method_name, (req_end - req_start).microseconds / 1000)
+
+_server = RPCServer()
+register = _server.register
+serve = _server.serve
+msgpack_init = _server.msgpack_init
+register_class= _server.register_class
+set_timeout = _server.set_timeout
