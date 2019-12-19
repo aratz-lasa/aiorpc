@@ -6,7 +6,7 @@ import asyncio
 from nose.tools import *
 import uvloop
 
-from aiorpc import RPCClient, register, serve, register_class
+from aiorpc import RPCClient, RPCServer
 from aiorpc.exceptions import RPCError, EnhancedRPCError
 
 HOST = 'localhost'
@@ -15,6 +15,7 @@ PATH = './test.socket'
 loop = None
 inet_server = None
 unix_server = None
+server = RPCServer()
 
 
 def setup_module():
@@ -51,26 +52,27 @@ def raise_error():
 
 
 def set_up_inet_server():
-    global loop, inet_server
+    global loop, inet_server, server
     if not loop:
         loop = uvloop.new_event_loop()
         asyncio.set_event_loop(loop)
-    coro = asyncio.start_server(serve, HOST, PORT)
+    coro = asyncio.start_server(server.serve, HOST, PORT)
     inet_server = loop.run_until_complete(coro)
 
 def set_up_unix_server():
-    global loop, unix_server
+    global loop, unix_server, server
     if not loop:
         loop = uvloop.new_event_loop()
         asyncio.set_event_loop(loop)
-    coro = asyncio.start_unix_server(serve, PATH)
+    coro = asyncio.start_unix_server(server.serve, PATH)
     unix_server = loop.run_until_complete(coro)
 
 def register_handlers():
-    register('echo', echo)
-    register('echo_delayed', echo_delayed)
-    register('raise_error', raise_error)
-    register_class(my_class)
+    global server
+    server.register('echo', echo)
+    server.register('echo_delayed', echo_delayed)
+    server.register('raise_error', raise_error)
+    server.register_class(my_class)
 
 
 # Test basic RPC Call
